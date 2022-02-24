@@ -129,13 +129,15 @@ class Dijkstra:
 
 
 def main():
-    s_start = (5, 5)
+    s_start = (500, 500)
     s_goal = (900, 925)
 
     dijkstra = Dijkstra(s_start, s_goal)
     plot = plotting.Plotting(s_start, s_goal)
 
     path, visited = dijkstra.searching()
+    print("path")
+    print(path)
     plot.animation(path, visited, "Dijkstra's")  # animation generate
 
 
