@@ -3,12 +3,10 @@ import sys
 import math
 import heapq
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
-                "/../../path_planning/")
-
-import plotting, env
-
-
+# sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
+#                 "/../../path_planning/")
+from .plotting import Plotting
+from .env import Env
 
 class Dijkstra:
     """Dijkstra set the cost as the priority 
@@ -17,7 +15,7 @@ class Dijkstra:
         self.s_start = s_start
         self.s_goal = s_goal
 
-        self.Env = env.Env()  # class Env
+        self.Env = Env()  # class Env
 
         self.u_set = self.Env.motions  # feasible input set
         self.obs = self.Env.obs  # position of obstacles
@@ -133,7 +131,7 @@ def main():
     s_goal = (900, 925)
 
     dijkstra = Dijkstra(s_start, s_goal)
-    plot = plotting.Plotting(s_start, s_goal)
+    plot = Plotting(s_start, s_goal)
 
     path, visited = dijkstra.searching()
     print("path")

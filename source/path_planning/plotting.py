@@ -3,16 +3,13 @@ import os
 import sys
 import matplotlib.pyplot as plt
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
-                "/../../path_planning/")
-
-import env
+from .env import Env
 
 
 class Plotting:
     def __init__(self, xI, xG):
         self.xI, self.xG = xI, xG
-        self.env = env.Env()
+        self.env = Env()
         self.obs = self.env.obs_map()
 
     def update_obs(self, obs):
