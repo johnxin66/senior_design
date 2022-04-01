@@ -53,6 +53,14 @@ class Env:
                 xPos = x[i]
                 yPos = y[i]
                 obs.add((xPos, yPos))
+            else:
+                for m in range(-5000, 5001, 1000):
+                    for n in range(-5, 6):
+                        if(i+n+m > 0 and i+n+m < 1000000):
+                            if (z[i+n+m] > 100):
+                                xPos = x[i]
+                                yPos = y[i]
+                                obs.add((xPos, yPos))
         '''
         def add_obs(ax, ay, bx, by):
             for i in range (ay, by):
