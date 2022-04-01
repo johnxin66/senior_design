@@ -4,7 +4,7 @@ Env 2D
 """
 
 import numpy as np
-import binvox_rw
+from .binvox_rw import read_as_coord_array
 
 
 
@@ -41,8 +41,8 @@ class Env:
         for i in range(y):
             obs.add((x - 1, i))
 
-        with open('test_map_1000_1000_300.binvox', 'rb') as f:
-            ms = binvox_rw.read_as_coord_array(f)
+        with open('./source/path_planning/test_map_1000_1000_300.binvox', 'rb') as f:
+            ms = read_as_coord_array(f)
         x = ms.data[0]
         y = ms.data[1]
         z = ms.data[2]
