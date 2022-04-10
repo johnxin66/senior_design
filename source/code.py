@@ -1,6 +1,6 @@
 
 import numpy as np
-import binvox_rw
+import source.path_planning.binvox_rw as binvox_rw
 
 with open('sample.binvox', 'rb') as f:
     ms = binvox_rw.read_as_coord_array(f)
