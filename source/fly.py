@@ -37,8 +37,11 @@ def generate_and_save_path_among(destinations: list):
     for i in range(l_destinations - 1):
         for j in range(i + 1, l_destinations):
             dijkstra = Dijkstra(destinations[i], destinations[j])
-            curr_waypoints, _ = dijkstra.searching()
-            paths[destinations[i] + destinations[j]] = curr_waypoints
+            curr_waypoints, visited = dijkstra.searching()
+            paths[destinations[i] + destinations[j]] = {"curr_waypoints": curr_waypoints, "visited": visited}
+            dijkstra = Dijkstra(destinations[j], destinations[i])
+            curr_waypoints, visited = dijkstra.searching()
+            paths[destinations[j] + destinations[i]] = {"curr_waypoints": curr_waypoints, "visited": visited}
     pickle.dump(paths, open(_PATHS_FILE_NAME,'wb'))
 # generate_and_save_path_among(s_goals)
 
@@ -113,12 +116,7 @@ def fly(dijkstra_waypoint_lists):
                 if (curr[0] - prev[0] == next[0] - curr[0] and curr[1] - prev[1] == next[1] - curr[1]):
                     continue
             new_waypoint = (waypoint[1] - 500), (waypoint[0] + _CORRECTION - 500), -120
-            # current_position = current_xy[0], current_xy[1]
-            yaw = 0 #math.degrees(math.atan2(current_xy[1] - new_waypoint[1], current_xy[0] - new_waypoint[0]))
-            # print("new_waypoint:", new_waypoint)
-            # print("current_xy:", current_xy)
-            # print("vector to new waypoint:", current_xy[1] - new_waypoint[1])
-            # print(f"yaw degree: {yaw}")
+            yaw = 0
             yaw_mode = airsim.YawMode(is_rate=False, yaw_or_rate=yaw)
             move_future = client.moveToPositionAsync(new_waypoint[0], new_waypoint[1], new_waypoint[2], 10, drivetrain=airsim.DrivetrainType.ForwardOnly, yaw_mode=yaw_mode)
             while not move_future._set_flag:
@@ -166,17 +164,15 @@ def fly_to_user_input(input_destinations):
     takeoff()
     for i_stop in range(len(stop_sequence) - 1):
         start_and_finish = s_goals[stop_sequence[i_stop]] + s_goals[stop_sequence[i_stop + 1]]
-        start_and_finish_reversed = s_goals[stop_sequence[i_stop + 1]] + s_goals[stop_sequence[i_stop]]
         curr_waypoints = None
         if start_and_finish in _PATHS_DICT:
-            curr_waypoints = _PATHS_DICT[start_and_finish]
-        elif start_and_finish_reversed in _PATHS_DICT:
-            curr_waypoints = _PATHS_DICT[start_and_finish_reversed][::-1]
+            curr_waypoints = _PATHS_DICT[start_and_finish]["curr_waypoints"]
+            visited = _PATHS_DICT[start_and_finish]["visited"]
         else:
             raise Exception("Unrecognized destinations")
         dijkstra_waypoint_list.append(curr_waypoints)
         # plot = Plotting(s_goals[stop_sequence[i_stop]], s_goals[stop_sequence[i_stop + 1]])
-        # plot.animation(curr_waypoints, visited, "Dijkstra's")  # animation generate
+        # plot.animation(curr_waypoints, visited, "Dijkstra's Algorithm Animation")  # animation generation
     fly(dijkstra_waypoint_list)
 user_input_destinations = ["Between the Traffic", "Into the Tree", "Concrete Plaza", "Brick Plaza"]
 fly_to_user_input(user_input_destinations)
