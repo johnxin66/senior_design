@@ -1,7 +1,7 @@
 import numpy as np
 import binvox_rw
 
-with open('sample.binvox', 'rb') as f:
+with open('test_map_1000_1000_300.binvox', 'rb') as f:
     ms = binvox_rw.read_as_coord_array(f)
 
 x = ms.data[0]
