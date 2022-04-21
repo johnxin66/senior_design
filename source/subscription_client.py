@@ -15,8 +15,15 @@ API_KEY = "da2-x4zbofblczcxhhamhi3xfkslza"
 
 # GraphQL subscription Registration object
 GQL_SUBSCRIPTION = json.dumps({
-        'query': 'subscription OnUpdateTodo { onUpdateTodo { __typename id title } }',
-        'variables': {}
+        'query': '''subscription MySubscription($conversationId: ID!) {
+            subscribeToNewMessage(conversationId: $conversationId) {
+                content
+                conversationId
+                createdAt
+                id
+            }
+        }''',
+        'variables': {"conversationId": "Demo-Delivery"}
 })
 
 # Discovered values from the AppSync endpoint (API_URL)
