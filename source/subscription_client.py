@@ -10,6 +10,8 @@ import threading
 
 import json
 
+from fly import main_fly
+
 # Constants Copied from AppSync API 'Settings'
 API_URL = "https://3alfgykgrzcivlcrnxna5wzr2q.appsync-api.us-east-1.amazonaws.com/graphql"
 API_KEY = "da2-x4zbofblczcxhhamhi3xfkslza"
@@ -37,6 +39,7 @@ SUB_ID = str(uuid4())
 # Set up Timeout Globals
 timeout_timer = None
 timeout_interval = 10
+LAST_MESSAGE_CREATED_AT = ""
 
 # Calculate UTC time in ISO format (AWS Friendly): YYYY-MM-DDTHH:mm:ssZ
 def header_time():
@@ -67,6 +70,7 @@ api_header = {
 def on_message(ws, message):
     global timeout_timer
     global timeout_interval
+    global LAST_MESSAGE_CREATED_AT
 
     print('### message ###')
     print('<< ' + message)
@@ -97,7 +101,11 @@ def on_message(ws, message):
         print('>> '+ start_sub )
         ws.send(start_sub)
 
-    # elif(message_type == 'data'):
+    elif(message_type == 'data'):
+        curr_created_at = message_object["payload"]["data"]["subscribeToNewMessage"]["createdAt"]
+        if LAST_MESSAGE_CREATED_AT != curr_created_at:
+            LAST_MESSAGE_CREATED_AT = curr_created_at
+            main_fly(message_object["payload"]["data"]["subscribeToNewMessage"]["content"].split(","))
         # deregister = {
         #     'type': 'stop',
         #     'id': SUB_ID
