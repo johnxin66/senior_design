@@ -2,6 +2,7 @@
 
 from base64 import b64encode, decode
 from datetime import datetime
+from time import sleep
 from uuid import uuid4
 
 import websocket
@@ -96,14 +97,17 @@ def on_message(ws, message):
         print('>> '+ start_sub )
         ws.send(start_sub)
 
-    elif(message_type == 'data'):
-        deregister = {
-            'type': 'stop',
-            'id': SUB_ID
-        }
-        end_sub = json.dumps(deregister)
-        print('>> ' + end_sub )
-        ws.send(end_sub)
+    # elif(message_type == 'data'):
+        # deregister = {
+        #     'type': 'stop',
+        #     'id': SUB_ID
+        # }
+        # end_sub = json.dumps(deregister)
+        # print('>> ' + end_sub )
+        # ws.send(end_sub)
+        # print("sleeping")
+        # sleep(15)
+        # print("waking")
 
     elif(message_object['type'] == 'error'):
         print ('Error from AppSync: ' + message_object['payload'])
