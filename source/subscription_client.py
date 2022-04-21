@@ -2,6 +2,7 @@
 
 from base64 import b64encode, decode
 from datetime import datetime
+import multiprocessing
 from time import sleep
 from uuid import uuid4
 
@@ -40,6 +41,7 @@ SUB_ID = str(uuid4())
 timeout_timer = None
 timeout_interval = 10
 LAST_MESSAGE_CREATED_AT = ""
+AIRSIM_PROCESS = None
 
 # Calculate UTC time in ISO format (AWS Friendly): YYYY-MM-DDTHH:mm:ssZ
 def header_time():
@@ -71,6 +73,7 @@ def on_message(ws, message):
     global timeout_timer
     global timeout_interval
     global LAST_MESSAGE_CREATED_AT
+    global AIRSIM_PROCESS
 
     print('### message ###')
     print('<< ' + message)
@@ -105,7 +108,12 @@ def on_message(ws, message):
         curr_created_at = message_object["payload"]["data"]["subscribeToNewMessage"]["createdAt"]
         if LAST_MESSAGE_CREATED_AT != curr_created_at:
             LAST_MESSAGE_CREATED_AT = curr_created_at
-            main_fly(message_object["payload"]["data"]["subscribeToNewMessage"]["content"].split(","))
+            if AIRSIM_PROCESS:
+                AIRSIM_PROCESS.terminate()
+                AIRSIM_PROCESS.join()
+            AIRSIM_PROCESS = multiprocessing.Process(target=main_fly, args=(message_object["payload"]["data"]["subscribeToNewMessage"]["content"].split(","),))
+            AIRSIM_PROCESS.start()
+            # main_fly(message_object["payload"]["data"]["subscribeToNewMessage"]["content"].split(","))
         # deregister = {
         #     'type': 'stop',
         #     'id': SUB_ID
