@@ -24,7 +24,7 @@ def endSession(reset=True):
 _CORRECTION = 0
 _PATHS_FILE_NAME = os.path.join(os.getcwd(), "teste_flight_paths.pickle")
 
-_DESTINATIONS_TO_COORDS = {"Between the Traffic": (480, 450), "Into the Tree": (425, 400), "Concrete Plaza": (450, 710), "Brick Plaza": (350, 680)}
+_DESTINATIONS_TO_COORDS = {"traffic": (480, 450), "Into the Tree": (425, 400), "concrete": (450, 710), "brick": (350, 680)}
 _S_START = (500, 500)
 s_goals = [(480, 450), (425, 400), (450, 710), (350, 680)]#, (400, 425)]
 # 1: between the cars, 2: into the tree, 3: empty concrete plaza, 4: brick plaza
@@ -174,7 +174,7 @@ def fly_to_user_input(input_destinations):
         # plot = Plotting(s_goals[stop_sequence[i_stop]], s_goals[stop_sequence[i_stop + 1]])
         # plot.animation(curr_waypoints, visited, "Dijkstra's Algorithm Animation")  # animation generation
     fly(dijkstra_waypoint_list)
-user_input_destinations = ["Between the Traffic", "Into the Tree", "Concrete Plaza", "Brick Plaza"]
+user_input_destinations = ["traffic", "Into the Tree", "concrete", "brick"]
 fly_to_user_input(user_input_destinations)
 
 # print("Flying...")
